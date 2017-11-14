@@ -96,4 +96,11 @@ public:
 
 		}
 	}
+	//디렉토리 용량 계산 함수
+	int calcSize() { return calcSize(root); }
+	//순환 호출에 의해 node를 루트로 하는 트리의 전체 용량 계산 함수
+	int calcSize(BinaryNode *node) {
+		if (node == NULL)return 0;
+		return node->getData() + calcSize(node->getLeft()) + calcSize(node->getRight());
+	}
 };
