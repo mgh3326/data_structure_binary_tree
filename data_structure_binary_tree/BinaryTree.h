@@ -1,5 +1,6 @@
 #pragma once
 #include "BinaryNode.h"
+#include "CircularQueue.h"//교재에는 추가 하라는 말이 없는데 추가 시키네
 class BinaryTree
 {
 	BinaryNode* root;
@@ -37,9 +38,62 @@ public:
 
 		}
 	}
-	void levelorder() {}
+	void levelorder() {
+		printf("\n levelorder: ");
+		if (!isEmpty()) {
+			CircularQueue q;
+			q.enqueue(root);
+			while (!q.isEmpty()) {
+				BinaryNode* n = q.dequeue();
+				if (n != NULL) {
+					printf("[%c]  ", n->getData());
+					q.enqueue(n->getLeft());
+					q.enqueue(n->getRight());
+				}
+			}
+			printf("\n");
+		}
+	}
 	//이진트리의 추가연산
-	int getCount() {}
-	int getHeight() {}
-	int getLeafCount() {}
+	int getCount() {
+		return isEmpty() ? 0 : getCount(root);	}
+	int getCount(BinaryNode* node) {
+		if (node == NULL)return 0;
+		return 1 + getCount(node->getLeft()) + getCount(node->getRight());
+	}
+	int getLeafCount() {
+		return isEmpty() ? 0 : getLeafCount(root);
+	}
+	int getLeafCount(BinaryNode* node) {
+		if (node == NULL)return 0;
+		if (node->isLeaf())return 1;
+		else return getLeafCount(node->getLeft()) + getLeafCount(node->getRight());
+	}
+	int getHeight() {
+		return isEmpty() ? 0 : getHeight(root);
+	}
+	int getHeight(BinaryNode* node) {
+		if (node == NULL)return 0;
+		int hLeft = getHeight(node->getLeft());
+		int hRight = getHeight(node->getRight());
+		return(hLeft > hRight) ? hLeft + 1 : hRight + 1;
+	}
+	int evaluate() { return evaluate(root); }
+	int evaluate(BinaryNode *node) {
+		if (node == NULL)return 0;
+		if (node->isLeaf())return node->getData();
+		else {
+			int op1 = evaluate(node->getLeft());
+			int op2 = evaluate(node->getRight());
+			switch (node->getData()) {
+			case'+':return op1 + op2;
+			case'-':return op1 - op2;
+			case'*':return op1 * op2;
+			case'/':return op1 / op2;
+
+			}
+			return 0;
+
+		}
+	}
 };
